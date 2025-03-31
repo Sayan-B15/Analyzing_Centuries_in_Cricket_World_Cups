@@ -130,14 +130,28 @@ st.pyplot(plt)
 # Players with Most 4s and 6s in Their Centuries
 st.write("### 💥 Players with Most 4s and 6s in Their Centuries")
 player_shots = data.groupby('Player')[['4s', '6s']].sum()
-players_most_4s = player_shots['4s'].sort_values(ascending=False)
-players_most_6s = player_shots['6s'].sort_values(ascending=False)
 
+# Players with Most 4s
 st.write("#### 🔥 Players with the Most 4s")
-st.write(players_most_4s.head())
+players_most_4s = player_shots['4s'].sort_values(ascending=False).head(10)
 
+# Players with Most 6s
 st.write("#### 💥 Players with the Most 6s")
-st.write(players_most_6s.head())
+players_most_6s = player_shots['6s'].sort_values(ascending=False).head(10)
+
+# HTML styling for table centering
+def generate_centered_table(data):
+    html = '<table style="width:100%; border-collapse: collapse; text-align: center;">'
+    html += '<tr><th style="border: 1px solid #ddd; padding: 8px;">Player</th><th style="border: 1px solid #ddd; padding: 8px;">4s</th></tr>'
+    for player, fours in data.items():
+        html += f'<tr><td style="border: 1px solid #ddd; padding: 8px;">{player}</td><td style="border: 1px solid #ddd; padding: 8px;">{fours}</td></tr>'
+    html += '</table>'
+    return html
+
+# Display tables for Players with Most 4s and Players with Most 6s
+st.markdown(f"<h3>🔥 Players with the Most 4s</h3>{generate_centered_table(players_most_4s)}", unsafe_allow_html=True)
+st.markdown(f"<h3>💥 Players with the Most 6s</h3>{generate_centered_table(players_most_6s)}", unsafe_allow_html=True)
+
 
 # Relationship between Batting Average and Strike Rate in The Oval, London
 st.write("### 📈 Relationship between Batting Average and Strike Rate in The Oval, London")
