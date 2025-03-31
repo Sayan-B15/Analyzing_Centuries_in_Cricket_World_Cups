@@ -70,8 +70,23 @@ st.dataframe(data)
 
 # Comparison of Centuries Scored by Teams against Different Oppositions
 st.write("### ⚔️ Comparison of Centuries Scored by Teams against Different Oppositions")
-team_opposition_centuries = data.groupby(['Team', 'Opposition']).size()
-st.write(team_opposition_centuries)
+
+# Group the data by Team and Opposition, then count the number of centuries
+team_opposition_centuries = data.groupby(['Team', 'Opposition']).size().reset_index(name='Centuries')
+
+# HTML styling for the centered table
+def generate_centered_table_comparison(data):
+    html = '<table style="width:100%; border-collapse: collapse; text-align: center; font-family: Arial, sans-serif;">'
+    html += '<tr><th style="border: 1px solid #ddd; padding: 10px; background-color: #f4f4f4;">Team</th><th style="border: 1px solid #ddd; padding: 10px; background-color: #f4f4f4;">Opposition</th><th style="border: 1px solid #ddd; padding: 10px; background-color: #f4f4f4;">Centuries</th></tr>'
+    for _, row in data.iterrows():
+        html += f'<tr><td style="border: 1px solid #ddd; padding: 8px; background-color: #fafafa;">{row["Team"]}</td>'
+        html += f'<td style="border: 1px solid #ddd; padding: 8px; background-color: #fafafa;">{row["Opposition"]}</td>'
+        html += f'<td style="border: 1px solid #ddd; padding: 8px; background-color: #fafafa;">{row["Centuries"]}</td></tr>'
+    html += '</table>'
+    return html
+
+# Generate and display the table with centered content
+st.markdown(generate_centered_table_comparison(team_opposition_centuries), unsafe_allow_html=True)
 
 # Team performance at Old Trafford Cricket Ground, Manchester
 selected_venue = 'Old Trafford Cricket Ground, Manchester'
@@ -139,18 +154,22 @@ players_most_4s = player_shots['4s'].sort_values(ascending=False).head(10)
 st.write("#### 💥 Players with the Most 6s")
 players_most_6s = player_shots['6s'].sort_values(ascending=False).head(10)
 
-# HTML styling for table centering
-def generate_centered_table(data):
-    html = '<table style="width:100%; border-collapse: collapse; text-align: center;">'
-    html += '<tr><th style="border: 1px solid #ddd; padding: 8px;">Player</th><th style="border: 1px solid #ddd; padding: 8px;">4s</th></tr>'
-    for player, fours in data.items():
-        html += f'<tr><td style="border: 1px solid #ddd; padding: 8px;">{player}</td><td style="border: 1px solid #ddd; padding: 8px;">{fours}</td></tr>'
+# HTML styling for tables with center alignment
+def generate_centered_table_4s_6s(data, column_name):
+    html = f'<table style="width:100%; border-collapse: collapse; text-align: center; font-family: Arial, sans-serif;">'
+    html += f'<tr><th style="border: 1px solid #ddd; padding: 10px; background-color: #f4f4f4;">Player</th><th style="border: 1px solid #ddd; padding: 10px; background-color: #f4f4f4;">{column_name}</th></tr>'
+    for player, value in data.items():
+        html += f'<tr><td style="border: 1px solid #ddd; padding: 8px; background-color: #fafafa;">{player}</td>'
+        html += f'<td style="border: 1px solid #ddd; padding: 8px; background-color: #fafafa;">{value}</td></tr>'
     html += '</table>'
     return html
 
-# Display tables for Players with Most 4s and Players with Most 6s
-st.markdown(f"<h3>🔥 Players with the Most 4s</h3>{generate_centered_table(players_most_4s)}", unsafe_allow_html=True)
-st.markdown(f"<h3>💥 Players with the Most 6s</h3>{generate_centered_table(players_most_6s)}", unsafe_allow_html=True)
+# Generate and display the table for Players with Most 4s
+st.markdown(f"<h3>🔥 Players with the Most 4s</h3>{generate_centered_table_4s_6s(players_most_4s, '4s')}", unsafe_allow_html=True)
+
+# Generate and display the table for Players with Most 6s
+st.markdown(f"<h3>💥 Players with the Most 6s</h3>{generate_centered_table_4s_6s(players_most_6s, '6s')}", unsafe_allow_html=True)
+
 
 
 # Relationship between Batting Average and Strike Rate in The Oval, London
